@@ -1,2 +1,2 @@
-import { Symbolic } from './types';
-export declare const parseSymbolicUpdate: (symbolic: string) => Symbolic[];
+import { ParseSymbolicUpdate } from './types';
+export declare const parseSymbolicUpdate: ParseSymbolicUpdate;

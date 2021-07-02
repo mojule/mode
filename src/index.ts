@@ -1,42 +1,61 @@
 import { hasBit, hasRequestBit } from './core'
-import { permKeys, roleKeys } from './core/keys'
-import { Process } from './core/types'
+import { permKeys } from './core/keys'
+import { AccessOptions } from './core/types'
 import { applySymbolicUpdateGroup } from './symbolic-update'
 import { parseSymbolicUpdate } from './symbolic-update/parse'
+import { UpdateMode } from './types'
 
-export const updateMode = ( notation: string | number, mode: number = 0 ) => {
-  if( typeof notation === 'number' ) return notation
-  
-  const symb = parseSymbolicUpdate( notation )
+export const updateMode: UpdateMode = (
+  notation: string | number, mode: number
+) => {
+  if (typeof notation === 'number') return notation
 
-  return applySymbolicUpdateGroup( symb, mode )
+  const symb = parseSymbolicUpdate(notation)
+
+  return applySymbolicUpdateGroup(symb, mode)
 }
 
-export const canAccess = ( 
-  { isDirectory, isRoot, isGroup, isOwner }: Process, 
-  mode: number, request: number  
+export const canAccess = (
+  request: number, options: Partial<AccessOptions> = {}
 ) => {
-  // root can do anything with directories
-  if( isRoot && isDirectory ) return true
+  const {
+    isDirectory, isRoot, isGroup, isOwner, permissions
+  } = getOptions(options)
 
-  let requestedPerms = permKeys.filter( 
-    perm => hasRequestBit( perm, request ) 
+  // root can do anything with directories
+  if (isRoot && isDirectory) return true
+
+  let requestedPerms = permKeys.filter(
+    perm => hasRequestBit(perm, request)
   )
 
   // root cannot necessarily execute files
-  if( isRoot && !requestedPerms.includes( 'x' ) ) return true
+  if (isRoot && !requestedPerms.includes('x')) return true
 
   // if root we can ignore the other perms, we only need to see if we can x
-  if( isRoot ) requestedPerms = [ 'x' ]
+  if (isRoot) requestedPerms = ['x']
 
-  if( isOwner && requestedPerms.every( p => hasBit( 'u', p, mode ) ) )
+  if (isOwner && requestedPerms.every(p => hasBit('u', p, permissions)))
     return true
 
-  if( isGroup && requestedPerms.every( p => hasBit( 'g', p, mode ) ) )
+  if (isGroup && requestedPerms.every(p => hasBit('g', p, permissions)))
     return true
-  
-  return requestedPerms.every( p => hasBit( 'o', p, mode ) )
+
+  return requestedPerms.every(p => hasBit('o', p, permissions))
 }
+
+const defaultOpts: AccessOptions = {
+  isDirectory: false,
+  isRoot: false,
+  isGroup: false,
+  isOwner: false,
+  permissions: 0o0000
+}
+
+const getOptions = (opts: Partial<AccessOptions>) =>
+  Object.assign({}, defaultAccessOptions, opts)
+
+export const defaultAccessOptions = Object.freeze(defaultOpts)
 
 export * from './core'
 export * from './core/keys'

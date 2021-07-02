@@ -1,72 +1,72 @@
-/* 
-  read by owner
-*/
-export const u_r = 0o00400 as const
+// owner read
+export const ur = 0o00400 as const
+
+// owner write
+export const uw = 0o00200 as const
 
 /* 
-  write by owner
-*/
-export const u_w = 0o00200 as const
+  owner execute/search
 
-/* 
-  execute/search by owner ("search" applies for directories, and means that 
-  entries within the directory can be accessed)
+  "search" applies for directories, and means that entries within the directory 
+  can be accessed  
 */
-export const u_x = 0o00100 as const
+export const ux = 0o00100 as const
 
-/* 
-  read by group
-*/
-export const g_r = 0o00040 as const
+// group read
+export const gr = 0o00040 as const
 
-/* 
-  write by group
-*/
-export const g_w = 0o00020 as const
+// group write
+export const gw = 0o00020 as const
 
-/* 
-  execute/search by group
-*/
-export const g_x = 0o00010 as const
 
-/* 
-  read by others
-*/
-export const o_r = 0o00004 as const
+// group execute/search
+export const gx = 0o00010 as const
 
-/* 
-  write by others
-*/
-export const o_w = 0o00002 as const
+// others read
+export const or = 0o00004 as const
 
-/* 
-  execute/search by others  
-*/
-export const o_x = 0o00001 as const
+// others write
+export const ow = 0o00002 as const
 
+// others execute/search
+export const ox = 0o00001 as const
+
+// access read
 export const r = 0o00004 as const
+
+// access write
 export const w = 0o00002 as const
+
+// access execute/search
 export const x = 0o00001 as const
 
-export const bitMasks = {
+export const rw = r | w
+export const rx = r | x
+export const wx = w | x
+export const rwx = r | w | x
+
+export const rolePermMasks = {
   u: {
-    r: u_r,
-    w: u_w,
-    x: u_x
+    r: ur,
+    w: uw,
+    x: ux
   },
   g: {
-    r: g_r,
-    w: g_w,
-    x: g_x
+    r: gr,
+    w: gw,
+    x: gx
   },
   o: {
-    r: o_r,
-    w: o_w,
-    x: o_x
+    r: or,
+    w: ow,
+    x: ox
   }
 } as const
 
-export const accessMask = {
+export const permMasks = {
+  ur, uw, ux, gr, gw, gx, or, ow, ox
+}
+
+export const accessMasks = {
   r, w, x
 } as const
-

@@ -5,10 +5,7 @@ const keys_1 = require("../core/keys");
 const predicates_1 = require("../core/predicates");
 const keys_2 = require("./keys");
 const predicates_2 = require("./predicates");
-const parseSymbolicUpdate = (symbolic) => {
-    const symSets = symbolic.split(keys_2.separatorKey);
-    return symSets.map(parseSet);
-};
+const parseSymbolicUpdate = symbolic => symbolic.split(keys_2.separatorKey).map(parseSet);
 exports.parseSymbolicUpdate = parseSymbolicUpdate;
 const parseSet = (input) => {
     const symbols = input.split('');

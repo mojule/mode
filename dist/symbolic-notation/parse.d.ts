@@ -1,1 +1,2 @@
-export declare const parseSymbolicNotation: (notation: string) => number;
+import { ParseSymbolicNotation } from './types';
+export declare const parseSymbolicNotation: ParseSymbolicNotation;

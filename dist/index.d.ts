@@ -1,6 +1,8 @@
-import { Process } from './core/types';
-export declare const updateMode: (notation: string | number, mode: number) => number;
-export declare const canAccess: ({ isDirectory, isRoot, isGroup, isOwner }: Process, mode: number, request: number) => boolean;
+import { AccessOptions } from './core/types';
+import { UpdateMode } from './types';
+export declare const updateMode: UpdateMode;
+export declare const canAccess: (request: number, options?: Partial<AccessOptions>) => boolean;
+export declare const defaultAccessOptions: Readonly<AccessOptions>;
 export * from './core';
 export * from './core/keys';
 export * from './core/masks';

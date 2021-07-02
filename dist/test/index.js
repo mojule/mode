@@ -2,13 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const __1 = require("..");
-const core_1 = require("../core");
-const keys_1 = require("../core/keys");
 const masks_1 = require("../core/masks");
-const predicates_1 = require("../core/predicates");
-const symbolic_notation_1 = require("../symbolic-notation");
-const parse_1 = require("../symbolic-notation/parse");
-const predicates_2 = require("../symbolic-notation/predicates");
 const allSet = 0o0777;
 const allEmpty = 0o0000;
 const updateFixtures = [];
@@ -23,19 +17,19 @@ const updateTitle = (mode, notation) => `chmod ${octal(mode)} ${notationToString
 describe('symbolic-notation', () => {
     describe('predicates', () => {
         it('isSymbolicNotation', () => {
-            assert(predicates_2.isSymbolicNotation('---------'));
+            assert(__1.isSymbolicNotation('---------'));
         });
         it('!isSymbolicNotation', () => {
-            assert(!predicates_2.isSymbolicNotation('--------$'));
+            assert(!__1.isSymbolicNotation('--------$'));
         });
     });
     describe('parse', () => {
         notationFixtures.forEach(([notation, expect]) => {
             it(`parse ${notation}`, () => {
-                assert.strictEqual(parse_1.parseSymbolicNotation(notation), expect);
+                assert.strictEqual(__1.parseSymbolicNotation(notation), expect);
             });
             it(`createSymbolicNotation ${octal(expect)}`, () => {
-                assert.strictEqual(symbolic_notation_1.createSymbolicNotation(expect), notation);
+                assert.strictEqual(__1.createSymbolicNotation(expect), notation);
             });
         });
     });
@@ -59,27 +53,27 @@ describe('symbolic-update', () => {
 describe('core', () => {
     describe('bit', () => {
         describe('hasBit', () => {
-            keys_1.roleKeys.forEach(role => {
-                keys_1.permKeys.forEach(perm => {
+            __1.roleKeys.forEach(role => {
+                __1.permKeys.forEach(perm => {
                     it(`hasBit ${role} ${perm} ${octal(allSet)}`, () => {
-                        assert(core_1.hasBit(role, perm, allSet));
+                        assert(__1.hasBit(role, perm, allSet));
                     });
                     it(`!hasBit ${role} ${perm} ${octal(allEmpty)}`, () => {
-                        assert(!core_1.hasBit(role, perm, allEmpty));
+                        assert(!__1.hasBit(role, perm, allEmpty));
                     });
                 });
             });
         });
     });
     describe('predicates', () => {
-        keys_1.roleKeys.forEach(key => {
+        __1.roleKeys.forEach(key => {
             it(`isRoleKey ${key}`, () => {
-                assert(predicates_1.isRoleKey(key));
+                assert(__1.isRoleKey(key));
             });
         });
-        keys_1.permKeys.forEach(key => {
+        __1.permKeys.forEach(key => {
             it(`!isRoleKey ${key}`, () => {
-                assert(!predicates_1.isRoleKey(key));
+                assert(!__1.isRoleKey(key));
             });
         });
     });
@@ -87,58 +81,77 @@ describe('core', () => {
 const accessFixtures = [
     [
         'root can read/write file with no permissions set',
-        { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-        allEmpty,
-        masks_1.r | masks_1.w,
+        {
+            isRoot: true
+        },
+        __1.rw,
         true
     ],
     [
         'root can read/write/execute directory with no permissions set',
-        { isDirectory: true, isRoot: true, isOwner: false, isGroup: false },
-        allEmpty,
-        masks_1.r | masks_1.w | masks_1.x,
+        {
+            isDirectory: true,
+            isRoot: true
+        },
+        masks_1.rwx,
         true
     ],
     [
         'root cannot execute a file with no permissions set',
-        { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-        allEmpty,
-        masks_1.x,
+        {
+            isRoot: true
+        },
+        __1.x,
         false
     ],
     [
         'root can execute a file while owner',
-        { isDirectory: false, isRoot: true, isOwner: true, isGroup: false },
-        parse_1.parseSymbolicNotation('--x------'),
-        masks_1.x,
+        {
+            isRoot: true,
+            isOwner: true,
+            permissions: __1.parseSymbolicNotation('--x------')
+        },
+        __1.x,
         true
     ],
     [
         'root can execute a file while in group',
-        { isDirectory: false, isRoot: true, isOwner: false, isGroup: true },
-        parse_1.parseSymbolicNotation('-----x---'),
-        masks_1.x,
+        {
+            isRoot: true,
+            isGroup: true,
+            permissions: __1.parseSymbolicNotation('-----x---')
+        },
+        __1.x,
         true
     ],
     [
         'root can execute a file with other',
-        { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-        parse_1.parseSymbolicNotation('--------x'),
-        masks_1.x,
+        {
+            isRoot: true,
+            permissions: __1.parseSymbolicNotation('--------x')
+        },
+        __1.x,
         true
     ],
     [
-        'other cannot access anything when empty',
-        { isDirectory: false, isRoot: false, isOwner: false, isGroup: false },
-        allEmpty,
-        masks_1.r,
-        false
+        'other can access nothing when options empty',
+        undefined,
+        0,
+        true
     ]
 ];
+__1.permKeys.forEach(request => {
+    accessFixtures.push([
+        `no ${request} when options empty`,
+        undefined,
+        __1.accessMasks[request],
+        false
+    ]);
+});
 describe('canAccess', () => {
-    accessFixtures.forEach(([title, process, mode, request, expect]) => {
+    accessFixtures.forEach(([title, process, request, expect]) => {
         it(title, () => {
-            assert.strictEqual(__1.canAccess(process, mode, request), expect);
+            assert.strictEqual(__1.canAccess(request, process), expect);
         });
     });
 });

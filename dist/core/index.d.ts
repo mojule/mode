@@ -1,6 +1,6 @@
-import { PermKey, RoleKey } from './types';
-export declare const hasBit: (role: RoleKey, perm: PermKey, mode: number) => boolean;
-export declare const getBit: (role: RoleKey, perm: PermKey, mode: number) => number;
-export declare const setBit: (role: RoleKey, perm: PermKey, mode: number) => number;
-export declare const clearBit: (role: RoleKey, perm: PermKey, mode: number) => number;
-export declare const hasRequestBit: (perm: PermKey, requestMode: number) => boolean;
+import { ClearBit, GetBit, HasBit, HasRequestBit, SetBit } from './types';
+export declare const hasBit: HasBit;
+export declare const getBit: GetBit;
+export declare const setBit: SetBit;
+export declare const clearBit: ClearBit;
+export declare const hasRequestBit: HasRequestBit;

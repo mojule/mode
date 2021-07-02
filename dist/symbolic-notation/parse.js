@@ -4,7 +4,7 @@ exports.parseSymbolicNotation = void 0;
 const core_1 = require("../core");
 const keys_1 = require("../core/keys");
 const keys_2 = require("./keys");
-const parseSymbolicNotation = (notation) => {
+const parseSymbolicNotation = notation => {
     let mode = 0;
     keys_1.roleKeys.forEach((roleKey, r) => {
         const i = r * keys_1.permKeys.length;

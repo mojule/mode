@@ -19,35 +19,18 @@ const applySymbolicUpdate = (update, mode) => {
 };
 exports.applySymbolicUpdate = applySymbolicUpdate;
 const applyUpdateFromPermsFlags = ({ operation, perms }, destRole, mode) => {
-    switch (operation) {
-        case '=': {
-            keys_1.permKeys.forEach(key => {
-                mode = copyBitFromFlags(perms, key, destRole, mode);
-            });
-            break;
-        }
-        case '+': {
-            mode = addBitFromFlags(perms, destRole, mode);
-            break;
-        }
-        case '-': {
-            mode = clearBitFromFlags(perms, destRole, mode);
-            break;
-        }
-    }
-    return mode;
+    const actions = {
+        '+': () => addBitFromFlags(perms, destRole, mode),
+        '-': () => clearBitFromFlags(perms, destRole, mode),
+        '=': () => keys_1.permKeys.reduce((mode, key) => copyBitFromFlags(perms, key, destRole, mode), mode)
+    };
+    return actions[operation]();
 };
 const copyBitFromFlags = (sourcePerms, perm, role, mode) => {
     if (sourcePerms.includes(perm))
         return core_1.setBit(role, perm, mode);
     return core_1.clearBit(role, perm, mode);
 };
-const addBitFromFlags = (perms, role, mode) => {
-    const set = (mode, perm) => core_1.setBit(role, perm, mode);
-    return perms.reduce(set, mode);
-};
-const clearBitFromFlags = (perms, role, mode) => {
-    const clear = (mode, perm) => core_1.clearBit(role, perm, mode);
-    return perms.reduce(clear, mode);
-};
+const addBitFromFlags = (perms, role, mode) => perms.reduce((mode, perm) => core_1.setBit(role, perm, mode), mode);
+const clearBitFromFlags = (perms, role, mode) => perms.reduce((mode, perm) => core_1.clearBit(role, perm, mode), mode);
 //# sourceMappingURL=index.js.map

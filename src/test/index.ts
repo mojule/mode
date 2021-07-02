@@ -1,11 +1,9 @@
 import * as assert from 'assert'
 
-import { 
-  canAccess, updateMode, 
-  hasBit, 
-  permKeys, roleKeys, r, w, x, isRoleKey,
+import {
+  canAccess, updateMode, hasBit, permKeys, roleKeys, isRoleKey,
   createSymbolicNotation, parseSymbolicNotation, isSymbolicNotation,
-  EntryData, SymbolicNotation
+  AccessOptions, SymbolicNotation, accessMasks, x, rw, rwx
 } from '..'
 
 const allSet = 0o0777
@@ -138,8 +136,7 @@ describe('core', () => {
 
 type AccessFixture = [
   title: string,
-  process: EntryData,
-  mode: number,
+  process: Partial<AccessOptions> | undefined,
   request: number,
   expect: boolean
 ]
@@ -147,60 +144,82 @@ type AccessFixture = [
 const accessFixtures: AccessFixture[] = [
   [
     'root can read/write file with no permissions set',
-    { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-    allEmpty,
-    r | w,
+    {
+      isRoot: true
+    },
+    rw,
     true
   ],
   [
     'root can read/write/execute directory with no permissions set',
-    { isDirectory: true, isRoot: true, isOwner: false, isGroup: false },
-    allEmpty,
-    r | w | x,
+    {
+      isDirectory: true,
+      isRoot: true
+    },
+    rwx,
     true
   ],
   [
     'root cannot execute a file with no permissions set',
-    { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-    allEmpty,
+    {
+      isRoot: true
+    },
     x,
     false
   ],
   [
     'root can execute a file while owner',
-    { isDirectory: false, isRoot: true, isOwner: true, isGroup: false },
-    parseSymbolicNotation( '--x------' ),
+    {
+      isRoot: true,
+      isOwner: true,
+      permissions: parseSymbolicNotation('--x------')
+    },
     x,
     true
   ],
   [
     'root can execute a file while in group',
-    { isDirectory: false, isRoot: true, isOwner: false, isGroup: true },
-    parseSymbolicNotation( '-----x---' ),
+    {
+      isRoot: true,
+      isGroup: true,
+      permissions: parseSymbolicNotation('-----x---')
+    },
     x,
     true
   ],
   [
     'root can execute a file with other',
-    { isDirectory: false, isRoot: true, isOwner: false, isGroup: false },
-    parseSymbolicNotation( '--------x' ),
+    {
+      isRoot: true,
+      permissions: parseSymbolicNotation('--------x')
+    },
     x,
     true
   ],
   [
-    'other cannot access anything when empty',
-    { isDirectory: false, isRoot: false, isOwner: false, isGroup: false },
-    allEmpty,
-    r,
-    false
+    'other can access nothing when options empty',
+    undefined,
+    0,
+    true
   ]
 ]
 
+permKeys.forEach(request => {
+  accessFixtures.push(
+    [
+      `no ${request} when options empty`,
+      undefined,
+      accessMasks[request],
+      false
+    ],
+  )
+})
+
 describe('canAccess', () => {
   accessFixtures.forEach(
-    ([title, process, mode, request, expect]) => {
+    ([title, process, request, expect]) => {
       it(title, () => {
-        assert.strictEqual(canAccess(process, mode, request), expect)
+        assert.strictEqual(canAccess(request, process), expect)
       })
     }
   )

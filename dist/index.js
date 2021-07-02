@@ -10,7 +10,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.canAccess = exports.updateMode = void 0;
+exports.defaultAccessOptions = exports.canAccess = exports.updateMode = void 0;
 const core_1 = require("./core");
 const keys_1 = require("./core/keys");
 const symbolic_update_1 = require("./symbolic-update");
@@ -22,7 +22,8 @@ const updateMode = (notation, mode) => {
     return symbolic_update_1.applySymbolicUpdateGroup(symb, mode);
 };
 exports.updateMode = updateMode;
-const canAccess = ({ isDirectory, isRoot, isGroup, isOwner }, mode, request) => {
+const canAccess = (request, options = {}) => {
+    const { isDirectory, isRoot, isGroup, isOwner, permissions } = getOptions(options);
     // root can do anything with directories
     if (isRoot && isDirectory)
         return true;
@@ -33,13 +34,22 @@ const canAccess = ({ isDirectory, isRoot, isGroup, isOwner }, mode, request) => 
     // if root we can ignore the other perms, we only need to see if we can x
     if (isRoot)
         requestedPerms = ['x'];
-    if (isOwner && requestedPerms.every(p => core_1.hasBit('u', p, mode)))
+    if (isOwner && requestedPerms.every(p => core_1.hasBit('u', p, permissions)))
         return true;
-    if (isGroup && requestedPerms.every(p => core_1.hasBit('g', p, mode)))
+    if (isGroup && requestedPerms.every(p => core_1.hasBit('g', p, permissions)))
         return true;
-    return requestedPerms.every(p => core_1.hasBit('o', p, mode));
+    return requestedPerms.every(p => core_1.hasBit('o', p, permissions));
 };
 exports.canAccess = canAccess;
+const defaultOpts = {
+    isDirectory: false,
+    isRoot: false,
+    isGroup: false,
+    isOwner: false,
+    permissions: 0o0000
+};
+const getOptions = (opts) => Object.assign({}, exports.defaultAccessOptions, opts);
+exports.defaultAccessOptions = Object.freeze(defaultOpts);
 __exportStar(require("./core"), exports);
 __exportStar(require("./core/keys"), exports);
 __exportStar(require("./core/masks"), exports);

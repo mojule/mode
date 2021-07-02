@@ -4,7 +4,7 @@ exports.createSymbolicNotation = void 0;
 const core_1 = require("../core");
 const keys_1 = require("../core/keys");
 const keys_2 = require("./keys");
-const createSymbolicNotation = (mode) => {
+const createSymbolicNotation = mode => {
     let notation = [];
     keys_1.roleKeys.forEach(roleKey => {
         keys_1.permKeys.forEach(permKey => {

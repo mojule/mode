@@ -3,13 +3,10 @@ import { isPermKey } from '../core/predicates'
 import { RoleGroup } from '../core/types'
 import { separatorKey } from './keys'
 import { isOperationKey, isSymbolicKey, isSymbolicRoleKey } from './predicates'
-import { PermsFlags, Symbolic } from './types'
+import { ParseSymbolicUpdate, PermsFlags, Symbolic } from './types'
 
-export const parseSymbolicUpdate = (symbolic: string) => {
-  const symSets = symbolic.split(separatorKey)
-
-  return symSets.map(parseSet)
-}
+export const parseSymbolicUpdate: ParseSymbolicUpdate = symbolic =>
+  symbolic.split(separatorKey).map(parseSet)
 
 const parseSet = (input: string) => {
   const symbols = input.split('')
@@ -44,7 +41,7 @@ const parseSet = (input: string) => {
   while (symbols.length) {
     const perms = takePerms(symbols)
 
-    if ( perms === undefined || symbols.length === previousLength)
+    if (perms === undefined || symbols.length === previousLength)
       throw Error(`Unexpected symbol at position ${i}: ${symbols[0]}`)
 
     permsGroup.push(perms)
