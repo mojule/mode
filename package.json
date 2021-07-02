@@ -1,6 +1,6 @@
 {
   "name": "@mojule/mode",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Helper functions for dealing with Linux style permissions",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

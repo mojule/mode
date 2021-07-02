@@ -31,7 +31,7 @@ type UpdateMode = ( notation: string | number, mode: number ) => number
 ```js
 import { canAccess, rwx } from '@mojule/mode'
 
-// determine these from your environment eg `isRoot = req.user.id === root.id`
+// determine from your environment eg `isRoot = req.user.id === root.id`
 const options = { 
   isRoot: true, 
   isGroup: true,
@@ -41,7 +41,7 @@ const options = {
 // root can always read/write
 const requestExecute = rwx
 
-// root can only execute file because isGroup is true and perms have group x 
+// root can execute file because isGroup: true and perms has group x 
 const canRootInGroupExecuteFile = canAccess( requestExecute, options )
 
 // true
@@ -49,7 +49,9 @@ console.log( canRootInGroupExecuteFile )
 ```
 
 ```ts
-type CanAccess = (request: number, options?: Partial<AccessOptions>) => boolean
+type CanAccess = (
+  request: number, options?: Partial<AccessOptions>
+) => boolean
 
 type AccessOptions = { 
   isDirectory: boolean
@@ -88,7 +90,9 @@ console.log( canAccess( 0 ) )
 ## symbolic notation
 
 ```js
-import { createSymbolicNotation, parseSymbolicNotation } from '@mojule/mode'
+import { 
+  createSymbolicNotation, parseSymbolicNotation 
+} from '@mojule/mode'
 
 const note = createSymbolicNotation( 0o0700 )
 
@@ -102,9 +106,11 @@ console.log( mode.toString( 8 ) )
 ```
 
 ```ts
-type CreateSymbolicNotation = ( mode: number ) => string & SymbolicNotation
+type CreateSymbolicNotation = ( 
+  mode: number 
+) => string & SymbolicNotation
 
-type ParseSymbolicNotation = ( notation: string ) => number
+type ParseSymbolicNotation = (notation: string) => number
 
 type NullableKey<T extends 'r'|'w'|'x'> = T | '-'
 
@@ -120,7 +126,9 @@ type SymbolicNotation = (
 ## symbolic update notation
 
 ```js
-import { parseSymbolicUpdate, applySymbolicUpdateGroup } from '@mojule/mode'
+import { 
+  parseSymbolicUpdate, applySymbolicUpdateGroup 
+} from '@mojule/mode'
 
 const updates = parseSymbolicUpdate( 'u+rw,g-rwx,o-rx' )
 
@@ -135,7 +143,9 @@ console.log( modeAfter.toString( 8 ) )
 ```ts
 type ParseSymbolicUpdate = (symbolic: string) => Symbolic[]
 
-type ApplySymbolicUpdateGroup = ( updates: Symbolic[], mode: number ) => number
+type ApplySymbolicUpdateGroup = (
+  updates: Symbolic[], mode: number
+) => number
 
 type Symbolic = {
   roleGroup: ( 'u' | 'g' | 'o' )[]
@@ -188,13 +198,15 @@ console.log( hasRequestBit( 'r', w | x ) )
 type RoleKey = 'u' | 'g' | 'o' 
 type PermKey = 'r' | 'w' | 'x'
 
-type BitFn<T = number> = ( role: RoleKey, perm: PermKey, mode: number ) => T 
+type BitFn<T = number> = ( 
+  role: RoleKey, perm: PermKey, mode: number 
+) => T 
 
 type HasBit = BitFn<boolean>
 type GetBit = BitFn
 type SetBit = BitFn
 type ClearBit = BitFn
-type HasRequestBit = ( perm: PermKey, requestMode: number ) => boolean
+type HasRequestBit = (perm: PermKey, requestMode: number) => boolean
 ```
 
 ## license 
