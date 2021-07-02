@@ -18,11 +18,11 @@ export type PermsFlags = {
 }
 
 export type ApplySymbolicUpdateGroup = (
-  updates: Symbolic[], mode: number
+  mode: number, updates: Symbolic[]
 ) => number
 
 export type ApplySymbolicUpdate = (
-  update: Symbolic, mode: number
+  mode: number, update: Symbolic
 ) => number
 
 export type ParseSymbolicUpdate = (symbolic: string) => Symbolic[]

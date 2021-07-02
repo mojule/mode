@@ -16,14 +16,14 @@ import { updateMode } from '@mojule/mode'
 const modeBefore = 0o0777
 
 // new permissions
-const modeAfter = updateMode( 'u+rw,g-rwx,o-rx', modeBefore )
+const modeAfter = updateMode( modeBefore, 'u+rw,g-rwx,o-rx' )
 
 // 702
 console.log( modeAfter.toString( 8 ) )
 ```
 
 ```ts
-type UpdateMode = ( notation: string | number, mode: number ) => number
+type UpdateMode = ( mode: number, notation: string | number ) => number
 ```
 
 ## canAccess
@@ -130,11 +130,11 @@ import {
   parseSymbolicUpdate, applySymbolicUpdateGroup 
 } from '@mojule/mode'
 
-const updates = parseSymbolicUpdate( 'u+rw,g-rwx,o-rx' )
-
 const modeBefore = 0o0777
 
-const modeAfter = applySymbolicUpdateGroup( updates, modeBefore )
+const updates = parseSymbolicUpdate( 'u+rw,g-rwx,o-rx' )
+
+const modeAfter = applySymbolicUpdateGroup( modeBefore, updates )
 
 // 702
 console.log( modeAfter.toString( 8 ) )
@@ -144,7 +144,7 @@ console.log( modeAfter.toString( 8 ) )
 type ParseSymbolicUpdate = (symbolic: string) => Symbolic[]
 
 type ApplySymbolicUpdateGroup = (
-  updates: Symbolic[], mode: number
+  mode: number, updates: Symbolic[]
 ) => number
 
 type Symbolic = {
@@ -167,31 +167,31 @@ import {
 } from '@mojule/mode'
 
 // true
-console.log( hasBit( 'g', 'x', 0o0710 ) )
+console.log( hasBit( o0710, 'g', 'x' ) )
 
 // false
-console.log( hasBit( 'o', 'x', 0o0710 ) )
+console.log( hasBit( o0710, 'o', 'x' ) )
 
 // 0o0010
-console.log( getBit( 'g', 'x', 0o0710 ) )
+console.log( getBit( o0710, 'g', 'x' ) )
 
 // 0o0000
-console.log( getBit( 'o', 'x', 0o0710 ) )
+console.log( getBit( o0710, 'o', 'x' ) )
 
 // 0o0700
-console.log( clearBit( 'g', 'x', 0o0710 ) )
+console.log( clearBit( o0710, 'g', 'x' ) )
 
 // true
-console.log( hasRequestBit( 'r', rwx ) )
+console.log( hasRequestBit( rwx, 'r' ) )
 
 // false
-console.log( hasRequestBit( 'r', wx ) )
+console.log( hasRequestBit( wx, 'r' ) )
 
 // true
-console.log( hasRequestBit( 'r', r | w | x ) )
+console.log( hasRequestBit( r | w | x, 'r' ) )
 
 // false
-console.log( hasRequestBit( 'r', w | x ) )
+console.log( hasRequestBit( w | x, 'r' ) )
 ```
 
 ```ts
@@ -199,14 +199,14 @@ type RoleKey = 'u' | 'g' | 'o'
 type PermKey = 'r' | 'w' | 'x'
 
 type BitFn<T = number> = ( 
-  role: RoleKey, perm: PermKey, mode: number 
+  mode: number, role: RoleKey, perm: PermKey
 ) => T 
 
 type HasBit = BitFn<boolean>
 type GetBit = BitFn
 type SetBit = BitFn
 type ClearBit = BitFn
-type HasRequestBit = (perm: PermKey, requestMode: number) => boolean
+type HasRequestBit = (requestMode: number, perm: PermKey) => boolean
 ```
 
 ## license 

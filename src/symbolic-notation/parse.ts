@@ -19,7 +19,7 @@ export const parseSymbolicNotation: ParseSymbolicNotation = notation => {
         `Unexpected value in symbolic notation at position ${pos}: ${symbol}`
       )
 
-      if (isPerm) mode = setBit(roleKey, permKey, mode)
+      if (isPerm) mode = setBit(mode, roleKey, permKey)
     })
   })
 

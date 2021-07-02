@@ -3,26 +3,21 @@ import { permKeys } from '../core/keys'
 import { PermKey, RoleKey } from '../core/types'
 
 import {
-  ApplySymbolicUpdate, ApplySymbolicUpdateGroup, OperationKey, PermsFlags, 
+  ApplySymbolicUpdate, ApplySymbolicUpdateGroup, OperationKey, PermsFlags,
   Symbolic
 } from './types'
 
 export const applySymbolicUpdateGroup: ApplySymbolicUpdateGroup = (
-  updates: Symbolic[], mode: number
-) => 
-  updates.reduce(
-    ( mode, update ) => applySymbolicUpdate(update, mode), 
-    mode
-  )
+  mode, updates
+) =>
+  updates.reduce(applySymbolicUpdate, mode)
 
-export const applySymbolicUpdate: ApplySymbolicUpdate = (
-  update: Symbolic, mode: number
-) => {
+export const applySymbolicUpdate: ApplySymbolicUpdate = (mode, update) => {
   const { roleGroup, permsGroup } = update
 
   roleGroup.forEach(role => {
     permsGroup.forEach(perms => {
-      mode = applyUpdateFromPermsFlags(perms, role, mode)
+      mode = applyUpdateFromPermsFlags(mode, perms, role)
     })
   })
 
@@ -30,14 +25,14 @@ export const applySymbolicUpdate: ApplySymbolicUpdate = (
 }
 
 const applyUpdateFromPermsFlags = (
-  { operation, perms }: PermsFlags, destRole: RoleKey, mode: number
+  mode: number, { operation, perms }: PermsFlags, destRole: RoleKey
 ) => {
   const actions: Record<OperationKey, () => number> = {
-    '+': () => addBitFromFlags(perms, destRole, mode),
-    '-': () => clearBitFromFlags(perms, destRole, mode),
+    '+': () => addBitFromFlags(mode, perms, destRole),
+    '-': () => clearBitFromFlags(mode, perms, destRole),
     '=': () =>
       permKeys.reduce(
-        (mode, key) => copyBitFromFlags(perms, key, destRole, mode),
+        (mode, key) => copyBitFromFlags(mode, perms, key, destRole),
         mode
       )
   }
@@ -46,25 +41,25 @@ const applyUpdateFromPermsFlags = (
 }
 
 const copyBitFromFlags = (
-  sourcePerms: PermKey[], perm: PermKey, role: RoleKey, mode: number
+  mode: number, sourcePerms: PermKey[], perm: PermKey, role: RoleKey
 ) => {
-  if (sourcePerms.includes(perm)) return setBit(role, perm, mode)
+  if (sourcePerms.includes(perm)) return setBit(mode, role, perm)
 
-  return clearBit(role, perm, mode)
+  return clearBit(mode, role, perm)
 }
 
 const addBitFromFlags = (
-  perms: PermKey[], role: RoleKey, mode: number
+  mode: number, perms: PermKey[], role: RoleKey
 ) =>
   perms.reduce(
-    (mode, perm) => setBit(role, perm, mode),
+    (mode, perm) => setBit(mode, role, perm),
     mode
   )
 
 const clearBitFromFlags = (
-  perms: PermKey[], role: RoleKey, mode: number
+  mode: number, perms: PermKey[], role: RoleKey
 ) =>
   perms.reduce(
-    (mode, perm) => clearBit(role, perm, mode),
+    (mode, perm) => clearBit(mode, role, perm),
     mode
   )

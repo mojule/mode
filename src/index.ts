@@ -5,13 +5,11 @@ import { applySymbolicUpdateGroup } from './symbolic-update'
 import { parseSymbolicUpdate } from './symbolic-update/parse'
 import { CanAccess, UpdateMode } from './types'
 
-export const updateMode: UpdateMode = (notation, mode) => {
-  if (typeof notation === 'number') return notation
-
-  const symb = parseSymbolicUpdate(notation)
-
-  return applySymbolicUpdateGroup(symb, mode)
-}
+export const updateMode: UpdateMode = (mode, notation) => (
+  typeof notation === 'number' ?
+    notation :
+    applySymbolicUpdateGroup(mode, parseSymbolicUpdate(notation))
+)
 
 export const canAccess: CanAccess = (request, options = {}) => {
   const {
@@ -22,7 +20,7 @@ export const canAccess: CanAccess = (request, options = {}) => {
   if (isRoot && isDirectory) return true
 
   let requestedPerms = permKeys.filter(
-    perm => hasRequestBit(perm, request)
+    perm => hasRequestBit(request, perm)
   )
 
   // root cannot necessarily execute files
@@ -31,13 +29,13 @@ export const canAccess: CanAccess = (request, options = {}) => {
   // if root we can ignore the other perms, we only need to see if we can x
   if (isRoot) requestedPerms = ['x']
 
-  if (isOwner && requestedPerms.every(p => hasBit('u', p, permissions)))
+  if (isOwner && requestedPerms.every(p => hasBit(permissions, 'u', p)))
     return true
 
-  if (isGroup && requestedPerms.every(p => hasBit('g', p, permissions)))
+  if (isGroup && requestedPerms.every(p => hasBit(permissions, 'g', p)))
     return true
 
-  return requestedPerms.every(p => hasBit('o', p, permissions))
+  return requestedPerms.every(p => hasBit(permissions, 'o', p))
 }
 
 const defaultOpts: AccessOptions = {

@@ -37,14 +37,14 @@ describe('symbolic-update', () => {
     describe('updateMode', () => {
         updateFixtures.forEach(([notation, mode, expect]) => {
             it(updateTitle(mode, notation), () => {
-                assert.strictEqual(__1.updateMode(notation, mode), expect);
+                assert.strictEqual(__1.updateMode(mode, notation), expect);
             });
         });
     });
     describe('exceptions', () => {
         updateExceptions.forEach(([notation, message]) => {
             it(`updateMode ${notation}`, () => {
-                assert.throws(() => __1.updateMode(notation, 0), { message });
+                assert.throws(() => __1.updateMode(0, notation), { message });
             });
         });
     });
@@ -55,10 +55,10 @@ describe('core', () => {
             __1.roleKeys.forEach(role => {
                 __1.permKeys.forEach(perm => {
                     it(`hasBit ${role} ${perm} ${octal(allSet)}`, () => {
-                        assert(__1.hasBit(role, perm, allSet));
+                        assert(__1.hasBit(allSet, role, perm));
                     });
                     it(`!hasBit ${role} ${perm} ${octal(allEmpty)}`, () => {
-                        assert(!__1.hasBit(role, perm, allEmpty));
+                        assert(!__1.hasBit(allEmpty, role, perm));
                     });
                 });
             });

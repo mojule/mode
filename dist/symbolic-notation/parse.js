@@ -16,7 +16,7 @@ const parseSymbolicNotation = notation => {
             if (!isValid)
                 throw Error(`Unexpected value in symbolic notation at position ${pos}: ${symbol}`);
             if (isPerm)
-                mode = core_1.setBit(roleKey, permKey, mode);
+                mode = core_1.setBit(mode, roleKey, permKey);
         });
     });
     return mode;

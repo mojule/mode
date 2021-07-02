@@ -16,7 +16,7 @@ export type AccessOptions = {
   permissions: number
 }
 
-type BitFn<T = number> = (role: RoleKey, perm: PermKey, mode: number) => T
+type BitFn<T = number> = (mode: number, role: RoleKey, perm: PermKey) => T
 
 export type HasBit = BitFn<boolean>
 
@@ -26,4 +26,4 @@ export type SetBit = BitFn
 
 export type ClearBit = BitFn
 
-export type HasRequestBit = (perm: PermKey, requestMode: number) => boolean
+export type HasRequestBit = (requestMode: number, perm: PermKey) => boolean

@@ -10,10 +10,10 @@ export declare type AccessOptions = {
     isGroup: boolean;
     permissions: number;
 };
-declare type BitFn<T = number> = (role: RoleKey, perm: PermKey, mode: number) => T;
+declare type BitFn<T = number> = (mode: number, role: RoleKey, perm: PermKey) => T;
 export declare type HasBit = BitFn<boolean>;
 export declare type GetBit = BitFn;
 export declare type SetBit = BitFn;
 export declare type ClearBit = BitFn;
-export declare type HasRequestBit = (perm: PermKey, requestMode: number) => boolean;
+export declare type HasRequestBit = (requestMode: number, perm: PermKey) => boolean;
 export {};

@@ -8,7 +8,7 @@ const createSymbolicNotation = mode => {
     let notation = [];
     keys_1.roleKeys.forEach(roleKey => {
         keys_1.permKeys.forEach(permKey => {
-            notation.push(core_1.hasBit(roleKey, permKey, mode) ? permKey : keys_2.nullKey);
+            notation.push(core_1.hasBit(mode, roleKey, permKey) ? permKey : keys_2.nullKey);
         });
     });
     return notation.join('');

@@ -15,30 +15,27 @@ const core_1 = require("./core");
 const keys_1 = require("./core/keys");
 const symbolic_update_1 = require("./symbolic-update");
 const parse_1 = require("./symbolic-update/parse");
-const updateMode = (notation, mode) => {
-    if (typeof notation === 'number')
-        return notation;
-    const symb = parse_1.parseSymbolicUpdate(notation);
-    return symbolic_update_1.applySymbolicUpdateGroup(symb, mode);
-};
+const updateMode = (mode, notation) => (typeof notation === 'number' ?
+    notation :
+    symbolic_update_1.applySymbolicUpdateGroup(mode, parse_1.parseSymbolicUpdate(notation)));
 exports.updateMode = updateMode;
 const canAccess = (request, options = {}) => {
     const { isDirectory, isRoot, isGroup, isOwner, permissions } = getOptions(options);
     // root can do anything with directories
     if (isRoot && isDirectory)
         return true;
-    let requestedPerms = keys_1.permKeys.filter(perm => core_1.hasRequestBit(perm, request));
+    let requestedPerms = keys_1.permKeys.filter(perm => core_1.hasRequestBit(request, perm));
     // root cannot necessarily execute files
     if (isRoot && !requestedPerms.includes('x'))
         return true;
     // if root we can ignore the other perms, we only need to see if we can x
     if (isRoot)
         requestedPerms = ['x'];
-    if (isOwner && requestedPerms.every(p => core_1.hasBit('u', p, permissions)))
+    if (isOwner && requestedPerms.every(p => core_1.hasBit(permissions, 'u', p)))
         return true;
-    if (isGroup && requestedPerms.every(p => core_1.hasBit('g', p, permissions)))
+    if (isGroup && requestedPerms.every(p => core_1.hasBit(permissions, 'g', p)))
         return true;
-    return requestedPerms.every(p => core_1.hasBit('o', p, permissions));
+    return requestedPerms.every(p => core_1.hasBit(permissions, 'o', p));
 };
 exports.canAccess = canAccess;
 const defaultOpts = {

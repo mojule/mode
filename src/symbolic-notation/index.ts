@@ -9,7 +9,7 @@ export const createSymbolicNotation: CreateSymbolicNotation = mode => {
 
   roleKeys.forEach(roleKey => {
     permKeys.forEach(permKey => {
-      notation.push(hasBit(roleKey, permKey, mode) ? permKey : nullKey)
+      notation.push(hasBit(mode,roleKey, permKey) ? permKey : nullKey)
     })
   })
 
