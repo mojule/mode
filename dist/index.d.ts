@@ -1,8 +1,8 @@
 import { AccessOptions } from './core/types';
-import { UpdateMode } from './types';
+import { CanAccess, UpdateMode } from './types';
 export declare const updateMode: UpdateMode;
-export declare const canAccess: (request: number, options?: Partial<AccessOptions>) => boolean;
-export declare const defaultAccessOptions: Readonly<AccessOptions>;
+export declare const canAccess: CanAccess;
+export declare const defaultAccessOptions: Readonly<AccessOptions & Partial<AccessOptions>>;
 export * from './core';
 export * from './core/keys';
 export * from './core/masks';

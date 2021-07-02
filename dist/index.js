@@ -48,8 +48,8 @@ const defaultOpts = {
     isOwner: false,
     permissions: 0o0000
 };
-const getOptions = (opts) => Object.assign({}, exports.defaultAccessOptions, opts);
-exports.defaultAccessOptions = Object.freeze(defaultOpts);
+const getOptions = (opts) => Object.assign({}, defaultOpts, opts);
+exports.defaultAccessOptions = Object.freeze(getOptions({}));
 __exportStar(require("./core"), exports);
 __exportStar(require("./core/keys"), exports);
 __exportStar(require("./core/masks"), exports);

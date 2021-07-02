@@ -3,11 +3,9 @@ import { permKeys } from './core/keys'
 import { AccessOptions } from './core/types'
 import { applySymbolicUpdateGroup } from './symbolic-update'
 import { parseSymbolicUpdate } from './symbolic-update/parse'
-import { UpdateMode } from './types'
+import { CanAccess, UpdateMode } from './types'
 
-export const updateMode: UpdateMode = (
-  notation: string | number, mode: number
-) => {
+export const updateMode: UpdateMode = (notation, mode) => {
   if (typeof notation === 'number') return notation
 
   const symb = parseSymbolicUpdate(notation)
@@ -15,9 +13,7 @@ export const updateMode: UpdateMode = (
   return applySymbolicUpdateGroup(symb, mode)
 }
 
-export const canAccess = (
-  request: number, options: Partial<AccessOptions> = {}
-) => {
+export const canAccess: CanAccess = (request, options = {}) => {
   const {
     isDirectory, isRoot, isGroup, isOwner, permissions
   } = getOptions(options)
@@ -53,9 +49,9 @@ const defaultOpts: AccessOptions = {
 }
 
 const getOptions = (opts: Partial<AccessOptions>) =>
-  Object.assign({}, defaultAccessOptions, opts)
+  Object.assign({}, defaultOpts, opts)
 
-export const defaultAccessOptions = Object.freeze(defaultOpts)
+export const defaultAccessOptions = Object.freeze(getOptions({}))
 
 export * from './core'
 export * from './core/keys'
