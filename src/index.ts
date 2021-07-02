@@ -4,7 +4,7 @@ import { Process } from './core/types'
 import { applySymbolicUpdateGroup } from './symbolic-update'
 import { parseSymbolicUpdate } from './symbolic-update/parse'
 
-export const updateMode = ( notation: string | number, mode: number ) => {
+export const updateMode = ( notation: string | number, mode: number = 0 ) => {
   if( typeof notation === 'number' ) return notation
   
   const symb = parseSymbolicUpdate( notation )

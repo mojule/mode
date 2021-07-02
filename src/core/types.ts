@@ -8,7 +8,7 @@ export type RoleGroup = RoleKey[]
 
 export type PermGroup = PermKey[]
 
-export type Process = { 
+export type EntryData = { 
   isDirectory: boolean
   isRoot: boolean
   isOwner: boolean

@@ -1,14 +1,12 @@
 import * as assert from 'assert'
-import { canAccess, updateMode } from '..'
-import { hasBit } from '../core'
-import { permKeys, roleKeys } from '../core/keys'
-import { r, w, x } from '../core/masks'
-import { isRoleKey } from '../core/predicates'
-import { Process } from '../core/types'
-import { createSymbolicNotation } from '../symbolic-notation'
-import { parseSymbolicNotation } from '../symbolic-notation/parse'
-import { isSymbolicNotation } from '../symbolic-notation/predicates'
-import { SymbolicNotation } from '../symbolic-notation/types'
+
+import { 
+  canAccess, updateMode, 
+  hasBit, 
+  permKeys, roleKeys, r, w, x, isRoleKey,
+  createSymbolicNotation, parseSymbolicNotation, isSymbolicNotation,
+  EntryData, SymbolicNotation
+} from '..'
 
 const allSet = 0o0777
 const allEmpty = 0o0000
@@ -140,7 +138,7 @@ describe('core', () => {
 
 type AccessFixture = [
   title: string,
-  process: Process,
+  process: EntryData,
   mode: number,
   request: number,
   expect: boolean

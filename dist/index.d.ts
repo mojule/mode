@@ -1,0 +1,18 @@
+import { Process } from './core/types';
+export declare const updateMode: (notation: string | number, mode: number) => number;
+export declare const canAccess: ({ isDirectory, isRoot, isGroup, isOwner }: Process, mode: number, request: number) => boolean;
+export * from './core';
+export * from './core/keys';
+export * from './core/masks';
+export * from './core/predicates';
+export * from './core/types';
+export * from './symbolic-notation';
+export * from './symbolic-notation/keys';
+export * from './symbolic-notation/parse';
+export * from './symbolic-notation/predicates';
+export * from './symbolic-notation/types';
+export * from './symbolic-update';
+export * from './symbolic-update/keys';
+export * from './symbolic-update/parse';
+export * from './symbolic-update/predicates';
+export * from './symbolic-update/types';
