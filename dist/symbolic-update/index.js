@@ -3,10 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.applySymbolicUpdate = exports.applySymbolicUpdateGroup = void 0;
 const core_1 = require("../core");
 const keys_1 = require("../core/keys");
-const applySymbolicUpdateGroup = (updates, mode) => {
-    const reducer = (mode, update) => exports.applySymbolicUpdate(update, mode);
-    return updates.reduce(reducer, mode);
-};
+const applySymbolicUpdateGroup = (updates, mode) => updates.reduce((mode, update) => exports.applySymbolicUpdate(update, mode), mode);
 exports.applySymbolicUpdateGroup = applySymbolicUpdateGroup;
 const applySymbolicUpdate = (update, mode) => {
     const { roleGroup, permsGroup } = update;

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const __1 = require("..");
-const masks_1 = require("../core/masks");
 const allSet = 0o0777;
 const allEmpty = 0o0000;
 const updateFixtures = [];
@@ -93,7 +92,7 @@ const accessFixtures = [
             isDirectory: true,
             isRoot: true
         },
-        masks_1.rwx,
+        __1.rwx,
         true
     ],
     [
